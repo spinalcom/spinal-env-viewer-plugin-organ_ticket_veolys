@@ -71,38 +71,6 @@ with this file. If not, see
           >
             <v-icon>refresh</v-icon>
           </v-btn>
-
-          <v-btn
-            v-tooltip="'Synchonize Spatial context with remote server'"
-            fab
-            :disabled="disableBtn"
-            small
-            color="blue"
-            @click="syncSpatialBtn"
-          >
-            <v-icon>location_city</v-icon>
-          </v-btn>
-          <v-btn
-            v-tooltip="'Synchonize remote server Process with this context'"
-            fab
-            :disabled="disableBtn"
-            small
-            color="blue"
-            @click="syncProcessMission"
-          >
-            <v-icon>assignment_returned</v-icon>
-          </v-btn>
-
-          <v-btn
-            v-tooltip="'Synchonize Spatial Equipment'"
-            fab
-            :disabled="disableBtn"
-            small
-            color="blue"
-            @click="openSetupEquip = true"
-          >
-            <v-icon>device_hub</v-icon>
-          </v-btn>
         </v-speed-dial>
       </v-toolbar>
       <v-card-text class="LinkAndManageContextTicketMission-card-container">
@@ -134,10 +102,9 @@ with this file. If not, see
 <script>
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import SetUpSelectedOrgan from './SetUpSelectedOrgan.vue';
-import SetUpContextEquip from './SetUpContextEquip.vue';
 export default {
   name: 'LinkAndManageContextTicketMission',
-  components: { SetUpSelectedOrgan, SetUpContextEquip },
+  components: { SetUpSelectedOrgan },
   data: function () {
     return {
       openSetup: false,
@@ -255,23 +222,6 @@ export default {
       const element = await node.element.load();
       element.restart.set(true);
     },
-    async syncSpatialBtn() {
-      const node = SpinalGraphService.getRealNode(this.contextId);
-      if (!node.element) {
-        return null;
-      }
-      const element = await node.element.load();
-      element.mission.organStatus.set(1);
-    },
-    async syncProcessMission() {
-      const node = SpinalGraphService.getRealNode(this.contextId);
-      if (!node.element) {
-        return null;
-      }
-      const element = await node.element.load();
-      element.mission.organStatus.set(2);
-    },
-    syncEquipMission() {},
     start() {},
     async onCloseSetup() {
       this.openSetup = false;

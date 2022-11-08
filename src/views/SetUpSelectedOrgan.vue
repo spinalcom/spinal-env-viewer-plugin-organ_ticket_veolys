@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <v-card class="spinal-setup-organ-body">
     <set-up-toolbar
-      title="Setup Context's equipment to send to Mission"
+      title="Setup Context's equipment to send"
       @back="back"
       @save="save"
     />
@@ -113,25 +113,12 @@ with this file. If not, see
           </v-radio-group>
 
           <v-text-field
-            v-model="appelant"
-            placeholder="Api Appelant"
-            autocomplete="off"
-            label="Api Appelant"
-          />
-
-          <v-text-field
-            v-model="prefixBuilding"
-            placeholder="Prefix Building"
-            autocomplete="off"
-            label="Prefix Building"
-          />
-
-          <v-text-field
             v-model="pullInterval"
             placeholder="Interval between each data pull"
             type="number"
             label="Interval between each data pull in ms"
           />
+
           <VueCtkDateTimePicker
             v-model="lastSyncCompu"
             :dark="true"
@@ -141,7 +128,6 @@ with this file. If not, see
         </template>
       </form>
     </v-card-text>
-    <v-text-field v-model="appelant" placeholder="appelant" label="appelant" />
   </v-card>
 </template>
 
@@ -171,15 +157,12 @@ export default {
       selectedOrgan: null,
       spatialContexts: [],
       contexts: [],
-      platform:"",
       selectedSpatialContext: null,
       plateforme:"",
-      appelant: "",
       apiLogin: "",
       apiPassword: "",
       showApiPassword: false,
       pullInterval: 5 * 60 * 1000, // 5 min
-      prefixBuilding: "",
       lastSync: NaN,
       organsCfg: [],
       // selectedContextId: ""
@@ -204,12 +187,10 @@ export default {
       const selectedFile = FileSystem._objects[this.selectedOrgan];
       // eslint-disable-next-line no-undef
       const node = await spinal.spinalSystem.loadModelPtr(selectedFile);
-      this.appelant = node.mission.appelant.get();
       this.apiLogin = node.mission.apiLogin.get();
       this.plateforme= node.mission.plateforme.get();
       this.apiPassword = node.mission.apiPassword.get();
       this.pullInterval = node.mission.pullInterval.get();
-      this.prefixBuilding = node.mission.prefixBuilding.get();
       this.lastSync = node.mission.lastSync.get();
       this.selectedSpatialContext = node.spatialContextID.get();
     },
@@ -278,18 +259,15 @@ export default {
       } else if (node.element.ptr.data !== organCfgModel._server_id) {
         node.element.setElement(organCfgModel);
       }
-
       // eslint-disable-next-line no-undef
       organCfgModel.digitalTwinPath.set(spinal.spinalSystem.getPath());
       organCfgModel.contextId.set(this.contextId);
       organCfgModel.spatialContextID.set(this.selectedSpatialContext);
-      organCfgModel.mission.appelant.set(this.appelant);
       organCfgModel.mission.plateforme.set(this.plateforme);
       organCfgModel.mission.apiLogin.set(this.apiLogin);
       organCfgModel.mission.apiPassword.set(this.apiPassword);
       organCfgModel.mission.pullInterval.set(this.pullInterval);
       organCfgModel.mission.lastSync.set(this.lastSync);
-      organCfgModel.mission.prefixBuilding.set(this.prefixBuilding);
       organCfgModel.restart.set(true);
       this.$emit("close");
     },
